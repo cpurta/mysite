@@ -2,6 +2,7 @@ test-results/
 tmp/
 routes/
 bin
+conf/app.conf
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
