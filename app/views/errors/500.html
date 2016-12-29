@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+	<link href="/public/css/errors.css" rel="stylesheet" type="text/css">
 	<head>
-		<title>Application error</title>
+		<title>Application error (Error 500)</title>
 	</head>
 	<body>
 		{{if eq .RunMode "dev"}}
 		{{template "errors/500-dev.html" .}}
 		{{else}}
-		<h1>Oops, an error occured</h1>
-		<p>
-			This exception has been logged.
-		</p>
+		<h1> ¯\_(ツ)_/¯</h1>
+		<div class="container">
+			<h1>{{.Title}}</h1>
+			<ins>That's some kind of error</ins>
+			<p>
+				{{.Description}}
+			</p>
+			<a href="/index">Go Back???</a>
+		</div>
 		{{end}}
 	</body>
 </html>
