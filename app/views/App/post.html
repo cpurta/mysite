@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Quines and self-reproducing Code</title>
+
+    {{template "header.html"}}
+
+    <link href="/public/css/prism.css" rel="stylesheet" type="text/css">
+
+    <!-- Load our code prettifier -->
+    <script src="/public/js/prism.js"></script>
+
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    {{template "navigation.html"}}
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/public/img/post-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Quines</h1>
+                        <h2 class="subheading">Self-reproducing code</h2>
+                        <span class="meta">Posted by <a href="#">Chris Purta</a> on December 28, 2016</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p>In a day and ages where viruses and worms are rampant in the some of the sites that we internet users may visit let's take a look at a concept that may be the first start of a "virus".</p>
+
+                    <p>The sound of "self-reproducing" code is enough to make into any episode of [insert shitty technology tv series]. It sounds like something that some computer genius could only come up with after chugging 5 code reds and days without sleep. But let's explore how easy the concept really is.</p>
+
+                    <p>Firstly, lets think about what it really means for code to be "self-reproducing". It means that the code written would have to output its own source code such that it could be compiled or executed again and again without failure.</p>
+
+                    <p>So lets do exactly that written in Golang.</p>
+
+                    <p>Naively, we could just read the source file line by line and output each line to std out like such:</p>
+
+                    <div class="container">
+                        <table>
+                            <tbody>
+                                <td>
+                                    <pre>
+                                        <code class="language-go">
+    package main
+    import (
+        "fmt"
+        "os"
+        "bufio"
+    )
+
+    func main() {
+        file, err := os.Open("quine.go")
+        if err != nil {
+            os.Exit(1)
+        }
+
+        defer file.Close()
+
+        scanner := bufio.NewScanner(file)
+        for scanner.Scan() {
+            fmt.Println(scanner.Text())
+        }
+    }
+                                        </code>
+                                    </pre>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>If we then run our code it will output it's source. Hurray! We did it... Well not exactly. There are some factors to take into account, if we execute this program it requires that we are in the same directory as the source to find itself. If we are in any other directory the program will exit since it cannot find <b>quine.go</b>. So how do we truly make a self-reproducing program.</p>
+
+                    <p>This is a bit trickier than one may think. Perhaps we can store the programs source code into a string and print out each line of the program using this string variable. This is part of the solution, as there are some things to consider.</p>
+
+                    <p>If we attempt to store the source in a string variable we will then have to print this string which contains the source since after all it is a part of the source so we seem to get caught in a loop of having to print the source variable. Also how would we handle escape sequences that are contained in the string variable?</p>
+
+                    <p><b>The answer:</b> Lets use and array of strings for each line of the source and loop through each element of our source array and print it and then re-print up to certain lines and use the ASCII values to escape quotes which will in turn stop us from having to keep escaping the escape characters that we are putting in place.</p>
+
+                    <h2 class="section-heading">Putting it all together</h2>
+
+                    <p>So lets tweak our original code to use a string array to hold our source code and use ASCII character codes to escape quotes and what not.</p>
+
+                    <div class="container">
+                        <table>
+                            <tbody>
+                                <td>
+                                    <pre>
+                                        <code class="language-go">
+    package main
+
+    import "fmt"
+
+    func main() {
+        quote := string(34)
+        slash := string(92)
+
+        source := []string {
+            "package main",
+            "import \"fmt\"",
+            "func main() {",
+            "   quote := string(34)",
+            "   slash := string(92)",
+            "   source := []string {",
+            "   ",
+            "   }",
+            "}",
+        }
+    }
+                                        </code>
+                                    </pre>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>Here we have roughed out the meat of the quine and we just now need to determine how we can add a loop to correctly print all of the source. Notice that we have 6 lines before we hit our source declaration. Let's print those out first.</p>
+
+                    <div class="container">
+                        <table>
+                            <tbody>
+                                <td>
+                                    <pre>
+                                        <code class="language-go">
+    package main
+
+    import "fmt"
+
+    func main() {
+        quote := string(34)
+        slash := string(92)
+
+        source := []string {
+            "package main",
+            "import \"fmt\"",
+            "func main() {",
+            "   quote := string(34)",
+            "   slash := string(92)",
+            "   source := []string {",
+            "   ",
+            "   }",
+            "}",
+        }
+
+        for i := 0; i < 6; i++ {
+            fmt.Println(source[i])
+        }
+    }
+                                        </code>
+                                    </pre>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>We will now have to add the three lines into the source array since this is now a part of the source. Now this leave us to print everything that is contained in the source array</p>
+
+                    <div class="container">
+                        <table>
+                            <tbody>
+                                <td>
+                                    <pre>
+                                        <code class="language-go">
+    package main
+
+    import "fmt"
+
+    func main() {
+        quote := string(34)
+        slash := string(92)
+
+        source := []string {
+            "package main",
+            "import \"fmt\"",
+            "func main() {",
+            "   quote := string(34)",
+            "   slash := string(92)",
+            "   source := []string {",
+            "   ",
+            "   }",
+            "   for i := 0; i < 6; i++ {",
+            "       fmt.Println(source[i])",
+            "   }",
+            "   for i := 0; i < len(source); i++ {",
+            "       if i == 1 {"
+            "           fmt.Println(source[6] + quote + string(105) + string(109) + string(112) + string(111) + string(114) + string(116) + string(32) + slash + quote + string(102) + string(109) + string(116) + slash + quote + quote + string(44))",
+            "       } else {",
+            "           fmt.Println(source[6] + quote + source[i] + quote + string(44))",
+            "       }",
+            "   }",
+            "}",
+        }
+
+        // Print out everything leading up to source :=
+        // these comments will be removed later
+        for i := 0; i < 6; i++ {
+            fmt.Println(source[i])
+        }
+
+        // Print out everything in source array
+        // use ASCII code for each character for "import \"fmt\"" line
+        // to avoid adding escape sequences to our source array
+        for i := 0; i < len(source); i++ {
+            if i == 1 {
+                fmt.Println(source[6] + quote + string(105) + string(109) + string(112) + string(111) + string(114) + string(116) + string(32) + slash + quote + string(102) + string(109) + string(116) + slash + quote + quote + string(44))
+            } else {
+                fmt.Println(source[6] + quote + source[i] + quote + string(44))
+            }
+        }
+    }
+                                        </code>
+                                    </pre>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>This is the confusing part. But what we have done is looped through everything in the source array adding <b>string[6]</b> which is a tab for formatting to everything and used the ASCII character codes when printing so that we do not have to add any wuoutes which when adding to the source array would have to be escaped.</p>
+                    <p>Now all that is left to do is print out the rest of the file which is all the for loops. This will require one last loop that we will also have to put in the source array when we are done.</p>
+
+                    <div class="container">
+                        <table>
+                            <tbody>
+                                <td>
+                                    <pre>
+                                        <code class="language-go">
+    package main
+
+    import "fmt"
+
+    func main() {
+        quote := string(34)
+        slash := string(92)
+
+        source := []string {
+            "package main",
+            "import \"fmt\"",
+            "func main() {",
+            "   quote := string(34)",
+            "   slash := string(92)",
+            "   source := []string {",
+            "   ",
+            "   }",
+            "   for i := 0; i < 6; i++ {",
+            "       fmt.Println(source[i])",
+            "   }",
+            "   for i := 0; i < len(source); i++ {",
+            "       if i == 1 {"
+            "           fmt.Println(source[6] + quote + string(105) + string(109) + string(112) + string(111) + string(114) + string(116) + string(32) + slash + quote + string(102) + string(109) + string(116) + slash + quote + quote + string(44))",
+            "       } else {",
+            "           fmt.Println(source[6] + quote + source[i] + quote + string(44))",
+            "       }",
+            "   }",
+            "   for i := 7; i < len(source); i++ {",
+            "       fmt.Println(source[i])",
+            "   }",
+            "}",
+        }
+
+        // Print out everything leading up to source :=
+        // these comments will be removed later
+        for i := 0; i < 6; i++ {
+            fmt.Println(source[i])
+        }
+
+        // Print out everything in source array
+        // use ASCII code for each character for "import \"fmt\"" line
+        // to avoid adding escape sequences to our source array
+        for i := 0; i < len(source); i++ {
+            if i == 1 {
+                fmt.Println(source[6] + quote + string(105) + string(109) + string(112) + string(111) + string(114) + string(116) + string(32) + slash + quote + string(102) + string(109) + string(116) + slash + quote + quote + string(44))
+            } else {
+                fmt.Println(source[6] + quote + source[i] + quote + string(44))
+            }
+        }
+
+        // Start from the end of the source array initialization
+        // and print out all of the for loops
+        for i := 7; i < len(source); i++ {
+            fmt.Println(source[i])
+        }
+    }
+                                        </code>
+                                    </pre>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>This is our final and completed quine that will not be the exact match of our source code since we will be missing some blank lines due to formatting but if you run <code>go run quine.go >> quine_output.go</code> you should then be able to then run the <b>quine_output.go</b> file and it will output the quine to standard out.</p>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <hr>
+
+    {{template "footer.html"}}
+
+</body>
+
+</html>

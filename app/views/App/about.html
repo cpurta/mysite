@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>About Me</title>
+
+    {{template "header.html"}}
+
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    {{template "navigation.html"}}
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/public/img/about-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="page-heading">
+                        <h1>About Me</h1>
+                        <hr class="small">
+                        <span class="subheading">It's not about what you get. It's about who you're becoming.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <img src="/public/img/profile.jpg" class="img-circle center-block">
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <p>Golang enthusiast, amateur data scientist, part time maker, snowboarder, hunter, powerlifter are all things that could be said about me.</p>
+                <p>I graduated from Eastern Washington University in 2015 with a Bachelors of Mathematics w/ Computer Science and shortly after that was hired as a Solutions Engineer at <a href="https://www.kochava.com">Kochava</a> located in Sandpoint, Idaho. I currently work with real time ingestion systems that collect data coming from mobile apps and mobile web that are then pipelined to analytical processing to provide insight to the mobile advertising world.</p>
+                <p>When I am not working on work related problems I enjoy tackling things that my job does not touch, such as IoT. I dabble with various home automation projects to just test whether they would work or not and if the do work it is usually a short lived project.</p>
+                <p>If I am not working you may find me on the slopes of the local ski resort, out in the woods, fishing on the lake if its summer or perhaps in the gym preparing for a powerlifting meet.</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    {{template "footer.html"}}
+
+</body>
+
+</html>
