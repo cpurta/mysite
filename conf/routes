@@ -10,6 +10,7 @@ GET     /about                                  App.About
 GET     /projects                               App.Projects
 GET     /encryption                             App.Encryption
 GET     /contact                                App.Contact
+POST    /contact                                App.Contact
 GET     /post/:id                               App.Post
 
 # Ignore favicon requests
