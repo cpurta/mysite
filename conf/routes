@@ -11,7 +11,8 @@ GET     /projects                               App.Projects
 GET     /encryption                             App.Encryption
 GET     /contact                                App.Contact
 POST    /contact                                App.Contact
-GET     /post/:id                               App.Post
+GET     /blogs/powerlifting                     App.Powerlifting
+GET     /blogs/quines                           App.Quines
 
 # Ignore favicon requests
 GET     /favicon.ico                            Static.Serve("public","img/favicon.png")
