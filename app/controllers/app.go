@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"crypto/tls"
+	"os"
 
 	"github.com/revel/revel"
 	gomail "gopkg.in/gomail.v2"
@@ -48,7 +49,10 @@ func (c App) Contact(name, email, phone, message string) revel.Result {
 			return c.Render()
 		}
 
-		d := gomail.NewDialer("smtp.gmail.com", 587, "cpurta@gmail.com", "rwjavdofhsrkpxqg")
+		email := os.Getenv("EMAIL_USERNAME")
+		emailPassword := os.Getenv("EMAIL_PASSWORD")
+
+		d := gomail.NewDialer("smtp.gmail.com", 587, email, emailPassword)
 		d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 		m := gomail.NewMessage()
