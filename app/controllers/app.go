@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"os"
 
+	"github.com/grantmd/go-coinbase"
 	"github.com/revel/revel"
 	gomail "gopkg.in/gomail.v2"
 )
@@ -33,6 +34,40 @@ func (c App) Projects() revel.Result {
 }
 
 func (c App) Encryption() revel.Result {
+	return c.Render()
+}
+
+func (c App) Trader() revel.Result {
+	apiKey := os.Getenv("COINBASE_API_KEY")
+
+	if apiKey != "" {
+		// load all data for the previous n months
+		c := coinbase.Client{
+			APIKey: apiKey,
+		}
+
+		historical, err := c.GetHistoricalPrices(1)
+		if err != nil {
+			revel.WARN.Println("Error getting historical prices:", err.Error())
+		}
+
+		dir, _ := os.Getwd()
+
+		revel.INFO.Println("Current dir:", dir)
+
+		dataOut, err := os.OpenFile(dir+"/public/data/data.csv", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0666)
+		if err != nil {
+			revel.WARN.Println("Error opening data file:", err.Error())
+		}
+
+		dataOut.WriteString("date,price\n")
+		dataOut.WriteString(historical)
+
+		dataOut.Close()
+	} else {
+		revel.WARN.Println("Missing \"COINBASE_API_KEY\" env variable")
+	}
+
 	return c.Render()
 }
 

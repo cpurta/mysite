@@ -13,6 +13,7 @@ GET     /contact                                App.Contact
 POST    /contact                                App.Contact
 GET     /blogs/powerlifting                     App.Powerlifting
 GET     /blogs/quines                           App.Quines
+GET     /trader                                 App.Trader
 
 # Ignore favicon requests
 GET     /favicon.ico                            Static.Serve("public","img/favicon.png")

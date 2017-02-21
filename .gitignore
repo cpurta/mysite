@@ -4,3 +4,4 @@ routes/
 bin
 conf/app.conf
 log
+coinbase.env
