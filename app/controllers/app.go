@@ -53,8 +53,6 @@ func (c App) Trader() revel.Result {
 
 		dir, _ := os.Getwd()
 
-		revel.INFO.Println("Current dir:", dir)
-
 		dataOut, err := os.OpenFile(dir+"/public/data/data.csv", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0666)
 		if err != nil {
 			revel.WARN.Println("Error opening data file:", err.Error())
