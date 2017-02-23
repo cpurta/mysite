@@ -6,11 +6,9 @@ g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.
 
 var strictIsoParse = d3.utcParse("%Y-%m-%dT%H:%M:%S%Z");
 
-var x = d3.scaleTime()
-    .rangeRound([0, width]);
-
-var y = d3.scaleLinear()
-    .rangeRound([height, 0]);
+var x = d3.scaleTime().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+var z = d3.scaleOrdinal(d3.schemeCategory10);
 
 var line = d3.line()
     .x(function(d) { return x(d.date); })
