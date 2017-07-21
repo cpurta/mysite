@@ -5,3 +5,4 @@ bin
 conf/app.conf
 log
 coinbase.env
+public/data/*

@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"os"
 
-	"github.com/grantmd/go-coinbase"
+	coinbase "github.com/grantmd/go-coinbase"
 	"github.com/revel/revel"
 	gomail "gopkg.in/gomail.v2"
 )
@@ -46,7 +46,7 @@ func (c App) Trader() revel.Result {
 			APIKey: apiKey,
 		}
 
-		historical, err := c.GetHistoricalPrices(1)
+		historical, err := c.GetHistoricalPrices(0)
 		if err != nil {
 			revel.WARN.Println("Error getting historical prices:", err.Error())
 		}
